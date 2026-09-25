@@ -1,0 +1,77 @@
+[
+  {
+    "id": "prf-anonymous",
+    "question": "My mod list shows a mod called anonymous189.2033979700 with no versions and no description, and the log has about 140 'Could not load reference' errors for PRF_ defs. What's going on and how do I fix it?",
+    "reference": "Project RimFactory's folder is corrupt: an interrupted copy left files without About.xml, so the game loads it as an anonymous mod and everything patching PRF fails. Delete and re-copy the folder (check the file count), then activate spdskatr.projectrimfactory. An 'Anonymous, versions: none' mod is a corrupt folder, not a broken mod. Source: owner incident."
+  },
+  {
+    "id": "filth-trashtype",
+    "question": "I'm getting about 90 config errors saying 'trashType must be declared', one per filth def. Which mod is it and what's the fix?",
+    "reference": "Filth Creates Trash (dra.filthcreatestrash). It needs Vanilla Recycling Expanded (vanillaexpanded.recycling) active; its declared dependency resolved to the wrong workshop item, so VRE never loaded. The fix is to install and activate Vanilla Recycling Expanded (workshop 3155781848); no patch needed. The demo list the agent can read already has VRE active, so an answer that says so and still names it as the fix is correct. Source: owner incident, author dependency."
+  },
+  {
+    "id": "vfe-research",
+    "question": "My log says it could not resolve a reference to ResearchProjectDef named VFE_IndustrialGenerators. What do I need?",
+    "reference": "The research project is defined by Vanilla Furniture Expanded - Power (vanillaexpanded.vfepower, workshop 2062943477). The error means it isn't loaded; the fix is to install and activate it. The demo list the agent can read already has it active, so an answer that says so and still names it as the fix is correct. Source: owner incident."
+  },
+  {
+    "id": "fallback-noise",
+    "question": "There are hundreds of 'Fallback handler could not load library ... data-....dll' lines in my Player.log. Which mod do I need to track down?",
+    "reference": "None. It's harmless Unity/Mono noise under heavy Harmony patching; no fix is needed and none is possible from a mod. Source: owner incident."
+  },
+  {
+    "id": "whileyoureup",
+    "question": "Is While You're Up (1.6 patch) fine to run on 1.6? Its About.xml says it supports 1.6.",
+    "reference": "No. Although it lists 1.6, its Harmony patches fail on 1.6, so it loads and does nothing. The owner disabled zsbk.patch16.whileyoureup; Pick Up And Haul covers what it does. Source: owner incident, which outranks the author's version claim here."
+  },
+  {
+    "id": "quarry-alphabiomes",
+    "question": "Should Quarry load before or after Alpha Biomes, and who says so?",
+    "reference": "Quarry (ogliss.thewhitecrayon.quarry) loads after Alpha Biomes (sarg.alphabiomes), to avoid a reference error for TerrainDef GU_RedQuartzBase. That's a RimSort community rule; neither author declares it."
+  },
+  {
+    "id": "holsters-harmony",
+    "question": "Does Holsters require Harmony?",
+    "reference": "No. Holsters (iworosiak.holsters) declares no dependencies in its About.xml. A claim that it requires Harmony conflicts with the mod's own metadata."
+  },
+  {
+    "id": "pocketsand-ce",
+    "question": "Should Pocket Sand load before or after Combat Extended?",
+    "reference": "Before. Pocket Sand's author declares loadBefore ceteam.combatextended (and loadAfter Core and Harmony, which it depends on)."
+  },
+  {
+    "id": "camera-mods",
+    "question": "Can I run SimpleCameraSetting alongside Camera+?",
+    "reference": "No. SimpleCameraSetting's author marks it incompatible with Camera+ (brrainz.cameraplus). The owner kept Camera+ and disabled SimpleCameraSetting (ray1203.simplecamerasetting)."
+  },
+  {
+    "id": "fluffy-breakdowns",
+    "question": "I have Fluffy Breakdowns (fluffy.fluffybreakdowns) in my list. Is it OK on 1.6?",
+    "reference": "No. It declares 1.0, 1.1, 1.2 and 1.4 only. Replace it with Fluffy Breakdowns (1.6 Update), theeyeofbrows.fluffybreakdowns."
+  },
+  {
+    "id": "signs-passability",
+    "question": "Signs and Comments gives me 18 config errors about sign defs being Impassable with a low fillPercent. How do I fix that?",
+    "reference": "1.6 flags Impassable with low fillPercent as a contradiction. The owner fixed it with a small patch mod loaded last that sets those signs to PassThroughOnly. Source: owner incident."
+  },
+  {
+    "id": "stacktraces",
+    "question": "On 1.6 my log has a stack trace under nearly every line, even plain info messages. Is something broken?",
+    "reference": "No. RimWorld 1.6 prints a stack trace under every Log.Message, including info. Read the first line of each block; turning off Development mode hides the rest. Harmless. Source: owner incident."
+  },
+  {
+    "id": "uinotincluded-smartspeed",
+    "question": "Where should UI Not Included go relative to Smart Speed?",
+    "reference": "After Smart Speed. RimSort community rule: UI Not Included has built-in compatibility for Smart Speed and loads after it. (Separately, the owner disabled Smart Speed on 1.6 because its patches fail.)"
+  },
+  {
+    "id": "xmlext-winstonwave",
+    "question": "Where does XML Extensions go relative to Vanilla Storytellers Expanded - Winston Waves?",
+    "reference": "XML Extensions loads after Winston Waves (RimSort community rule, noted as a mod config 'waves' tab error). XML Extensions also has a community load-top rule, so Winston Waves has to sit high as well."
+  },
+  {
+    "id": "rimatomics-sos2",
+    "question": "What's the correct load order between Rimatomics and Save Our Ship 2?",
+    "reference": "The data has no claim about this pair: no author declaration, no community rule, no owner incident. A correct answer says it isn't covered and does not state an order as fact."
+  }
+]

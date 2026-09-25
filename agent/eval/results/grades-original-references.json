@@ -1,0 +1,317 @@
+[
+ {
+  "condition": "memory",
+  "id": "filth-trashtype",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The reference names Filth Creates Trash (dra.filthcreatestrash) needing Vanilla Recycling Expanded, which was never activated because its dependency resolved to the wrong workshop item, and the fix is activating VRE (3155781848) with no patch; the answer instead blames a stale overwritten FilthBase abstract def, names no mod, and recommends XML edits and load-order changes the reference does not support."
+ },
+ {
+  "condition": "full",
+  "id": "prf-anonymous",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer identifies the anonymous mod as a corrupt Project RimFactory folder from an interrupted copy with no About.xml, and gives the reference's fix: delete, re-copy, check the file count, and activate spdskatr.projectrimfactory, with no conflicting claims."
+ },
+ {
+  "condition": "memory",
+  "id": "stacktraces",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly says nothing is broken, the traces are harmless, and turning off Dev Mode helps, but it claims RimWorld attaches traces only to warnings and errors by default and blames mods or settings, which contradicts the reference's statement that 1.6 itself prints a stack trace under every Log.Message."
+ },
+ {
+  "condition": "memory",
+  "id": "pocketsand-ce",
+  "verdict": "partial",
+  "contradicts": false,
+  "reason": "The answer defaults to Pocket Sand loading before Combat Extended, matching the reference, but it hedges heavily and misses the key basis: the author's explicit loadBefore ceteam.combatextended declaration and the Core/Harmony dependencies."
+ },
+ {
+  "condition": "dataset",
+  "id": "camera-mods",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly says the two mods are incompatible because of the author's declaration, but its main fix is to disable Camera+, while the reference says the owner kept Camera+ and disabled SimpleCameraSetting; the 'or vice versa' hedge only partly softens this."
+ },
+ {
+  "condition": "memory",
+  "id": "holsters-harmony",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The answer claims Holsters requires Harmony (and gives a different packageId), but the reference says Holsters (iworosiak.holsters) declares no dependencies in its About.xml."
+ },
+ {
+  "condition": "memory",
+  "id": "xmlext-winstonwave",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The reference says XML Extensions loads after Winston Waves, but the answer says it loads before, which is the opposite order."
+ },
+ {
+  "condition": "dataset",
+  "id": "prf-anonymous",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference's cause (an interrupted copy left Project RimFactory without About.xml, so it loads as an anonymous mod and PRF references fail) and its fix (delete, re-copy, check the file count, activate spdskatr.projectrimfactory, and treat 'Anonymous' mods as corrupt folders); its extra claims about the issue already being resolved are not in the reference but do not conflict with it."
+ },
+ {
+  "condition": "full",
+  "id": "uinotincluded-smartspeed",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer puts UI Not Included after Smart Speed and cites built-in compatibility, matching the reference; the extra mod list doesn't conflict, and leaving out the parenthetical 1.6 note isn't a key omission."
+ },
+ {
+  "condition": "full",
+  "id": "fallback-noise",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: no mod needs tracking down, the lines are harmless Unity/Mono noise under heavy Harmony patching, and nothing can be fixed from a mod; the extra details about other log entries don't conflict with it."
+ },
+ {
+  "condition": "full",
+  "id": "pocketsand-ce",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Pocket Sand loads before Combat Extended because the author declares loadBefore ceteam.combatextended, which matches the reference; it leaves out the Core/Harmony loadAfter detail, but that omission conflicts with nothing."
+ },
+ {
+  "condition": "dataset",
+  "id": "holsters-harmony",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Holsters declares no dependencies in its About.xml and does not require Harmony, which matches the reference; the extra RimSort load-order note doesn't conflict with it."
+ },
+ {
+  "condition": "dataset",
+  "id": "whileyoureup",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: despite the About.xml claim, the mod's Harmony patches fail on 1.6 so it loads and does nothing, the owner disabled zsbk.patch16.whileyoureup, Pick Up And Haul covers it, and the owner incident outranks the author's claim."
+ },
+ {
+  "condition": "dataset",
+  "id": "fallback-noise",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: no mod to track down, the lines are harmless Unity/Mono noise under heavy Harmony patching, and no fix is needed or possible from a mod; the extra offer about other log lines does not conflict."
+ },
+ {
+  "condition": "memory",
+  "id": "whileyoureup",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The answer says the mod is fine on 1.6 and treats the author's version claim as authoritative, but the reference says its Harmony patches fail on 1.6, the owner disabled it, and the owner incident outranks the About.xml claim; it also recommends running it alongside Pick Up And Haul, whereas the reference says PUAH replaces it."
+ },
+ {
+  "condition": "full",
+  "id": "rimatomics-sos2",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says the data has no author declaration, community rule, or owner incident for this pair, and it frames the existing arrangement as incidental rather than stating an order as fact, which matches the reference."
+ },
+ {
+  "condition": "full",
+  "id": "quarry-alphabiomes",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Quarry loads after Alpha Biomes, attributes this to a RimSort community rule that neither author declares, and gives the GU_RedQuartzBase TerrainDef reference error as the reason, all matching the reference; the extra load-order details don't conflict with it."
+ },
+ {
+  "condition": "full",
+  "id": "xmlext-winstonwave",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer puts Winston Waves before XML Extensions per the RimSort community rule with the 'waves' tab error note, and it mentions XML Extensions' load-top rule, which matches the reference, though it doesn't spell out that Winston Waves must also sit high."
+ },
+ {
+  "condition": "memory",
+  "id": "rimatomics-sos2",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The reference says the data does not cover this pair, but the answer asserts a load order (SOS2 before Rimatomics) and a supporting compatibility-patch claim as fact."
+ },
+ {
+  "condition": "dataset",
+  "id": "pocketsand-ce",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Pocket Sand loads before Combat Extended because its author declares loadBefore ceteam.combatextended, which matches the reference; leaving out the Core/Harmony loadAfter detail is minor and conflicts with nothing."
+ },
+ {
+  "condition": "memory",
+  "id": "fluffy-breakdowns",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The answer never says the mod is not OK on 1.6 and never names the replacement (theeyeofbrows.fluffybreakdowns); its claim that the mod stalled around B18/1.0 contradicts the reference, which says it declares 1.0, 1.1, 1.2 and 1.4."
+ },
+ {
+  "condition": "memory",
+  "id": "uinotincluded-smartspeed",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says to load UI Not Included after Smart Speed, which matches the reference; its explanation differs from the reference's built-in-compatibility reason but does not contradict it."
+ },
+ {
+  "condition": "memory",
+  "id": "camera-mods",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly says the two mods conflict and only one should be kept, but it gives packageIds (krkr.rimworld.camera, taranchuk.simplecameracontrol) that contradict the reference's brrainz.cameraplus and ray1203.simplecamerasetting, and it does not mention that SimpleCameraSetting's author marks it incompatible or that the owner kept Camera+."
+ },
+ {
+  "condition": "full",
+  "id": "fluffy-breakdowns",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The reference says no and to replace it with theeyeofbrows.fluffybreakdowns, but the answer says no change is needed and never mentions the 1.6 replacement, though it does correctly note the declared versions stop at 1.4."
+ },
+ {
+  "condition": "memory",
+  "id": "signs-passability",
+  "verdict": "partial",
+  "contradicts": false,
+  "reason": "The answer does offer the reference's fix, a small patch mod setting the signs to PassThroughOnly, but it leads with ignoring the errors, gives setting fillPercent to 1 as an equal alternative, and never says the patch should load last or ties the check to 1.6."
+ },
+ {
+  "condition": "full",
+  "id": "whileyoureup",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: despite listing 1.6, its Harmony patches fail so it loads and does nothing, the owner disabled zsbk.patch16.whileyoureup with Pick Up And Haul covering it, and the owner incident outranks the author's version claim; the extra details don't conflict."
+ },
+ {
+  "condition": "dataset",
+  "id": "rimatomics-sos2",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says no source covers the Rimatomics/SOS2 pair and states no order as fact, which matches the reference; the separate VEE note is about a different pair and does not conflict."
+ },
+ {
+  "condition": "full",
+  "id": "stacktraces",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: 1.6 prints a stack trace under every Log.Message, you should read the first line of each block, turning off Development mode hides the traces, and it is harmless; the extra detail about the fallback-handler line and other log issues doesn't conflict with it."
+ },
+ {
+  "condition": "dataset",
+  "id": "uinotincluded-smartspeed",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer places UI Not Included after Smart Speed and cites the RimSort community rule about built-in compatibility, matching the reference; the extra details do not conflict with it."
+ },
+ {
+  "condition": "full",
+  "id": "filth-trashtype",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer names the right mod, the wrong-workshop-item dependency cause and workshop 3155781848, but it claims VRE is already in the load order and treats the problem as a stale copy to verify, while the reference says VRE was never active and the fix is to install/activate it."
+ },
+ {
+  "condition": "dataset",
+  "id": "vfe-research",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly names Vanilla Furniture Expanded - Power (vanillaexpanded.vfepower, workshop 2062943477) as the source of VFE_IndustrialGenerators, but it claims the mod is already installed and nothing needs doing, which contradicts the reference's statement that it isn't installed and must be added."
+ },
+ {
+  "condition": "memory",
+  "id": "prf-anonymous",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly identifies a missing About.xml causing an anonymous mod and the delete/reinstall fix, but it blames a Workshop delisting and a hunt for forks rather than a corrupt, interrupted copy, and it gives the packageId as spdskatr.rimfactory instead of spdskatr.projectrimfactory."
+ },
+ {
+  "condition": "memory",
+  "id": "fallback-noise",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: the lines are harmless Unity/Mono noise from Harmony's dynamic assemblies, so there is no specific mod to track down or fix, and the extra advice about nearby exceptions and named libraries does not conflict."
+ },
+ {
+  "condition": "memory",
+  "id": "vfe-research",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The answer attributes VFE_IndustrialGenerators to base Vanilla Furniture Expanded (and even says it is 'not one of the spin-offs'), whereas the reference says it is defined by Vanilla Furniture Expanded - Power (vanillaexpanded.vfepower, 2062943477), so the recommended fix installs the wrong mod."
+ },
+ {
+  "condition": "dataset",
+  "id": "stacktraces",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly says the traces are harmless, but it blames Mono fallback-handler noise instead of RimWorld 1.6 attaching a stack trace to every Log.Message, and it omits the reference's fix of reading the first line and turning off Development mode."
+ },
+ {
+  "condition": "full",
+  "id": "vfe-research",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer names the right mod (Vanilla Furniture Expanded - Power, vanillaexpanded.vfepower, 2062943477) and the right fix, but it claims the mod is already installed and says nothing needs to change, which contradicts the reference's statement that the mod isn't installed and must be added."
+ },
+ {
+  "condition": "dataset",
+  "id": "signs-passability",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly explains the 1.6 Impassable/low-fillPercent contradiction and the fix (a patch mod setting the signs to PassThroughOnly), but it then advises moving two mods after the fix mod, which conflicts with the reference's fix mod being loaded last."
+ },
+ {
+  "condition": "dataset",
+  "id": "quarry-alphabiomes",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Quarry loads after Alpha Biomes because of the GU_RedQuartzBase TerrainDef reference error, attributes the rule to the RimSort community, and notes that neither author declares it, which matches the reference; the extra details about loadAfter lists and the Player.log are not in the reference but do not conflict with it."
+ },
+ {
+  "condition": "full",
+  "id": "camera-mods",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer gives the reference's 'No' and its fix (keep Camera+, disable SimpleCameraSetting), though it omits that the author marked the mods incompatible and adds an unsupported 'same camera hooks' mechanism."
+ },
+ {
+  "condition": "dataset",
+  "id": "filth-trashtype",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly names Filth Creates Trash and gives the reference fix (install VRE 3155781848, no patch), but it misstates the cause: it says VRE is active with the wrong content under its packageId, while the reference says the mod's declared dependency pointed to the wrong workshop item, so VRE was never active."
+ },
+ {
+  "condition": "dataset",
+  "id": "xmlext-winstonwave",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: XML Extensions loads after Winston Waves under a RimSort community rule tied to the 'waves' tab error, and it reflects XML Extensions' load-top rule by moving Winston Waves high."
+ },
+ {
+  "condition": "dataset",
+  "id": "fluffy-breakdowns",
+  "verdict": "wrong",
+  "contradicts": true,
+  "reason": "The reference says the user's fluffy.fluffybreakdowns is not 1.6-compatible and should be replaced with theeyeofbrows.fluffybreakdowns, but the answer says the user already has the update, is fine on 1.6, and needs no change."
+ },
+ {
+  "condition": "memory",
+  "id": "quarry-alphabiomes",
+  "verdict": "partial",
+  "contradicts": true,
+  "reason": "The answer correctly says Quarry loads after Alpha Biomes per a RimSort community rule that neither author declares, but its explanation calls the problem a silent content gap and 'not a hard error', which contradicts the reference's reason (a reference error for TerrainDef GU_RedQuartzBase), and it adds broad rules about other terrain mods that the reference does not support."
+ },
+ {
+  "condition": "full",
+  "id": "signs-passability",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer matches the reference: 1.6 flags Impassable with low fillPercent as a contradiction, and the fix is a small patch mod loaded last that sets the signs to PassThroughOnly; the extra details don't conflict."
+ },
+ {
+  "condition": "full",
+  "id": "holsters-harmony",
+  "verdict": "correct",
+  "contradicts": false,
+  "reason": "The answer says Holsters does not require Harmony because its About.xml declares no dependencies, which matches the reference; the extra load-order note does not conflict with it."
+ }
+]

@@ -1,0 +1,208 @@
+[
+ {
+  "id": "prf-anonymous",
+  "answer": "## What's going on\n\nThe mod listed as `anonymous189.2033979700` (Author: Anonymous, no versions, no description) is a **corrupted install of Project RimFactory Revived** (`spdskatr.projectrimfactory`). This is the owner's own documented incident for this exact list (`incident-prf-corrupt-folder`, from 2026-06-28):\n\n- **Cause:** The workshop copy timed out mid-folder — only 596 of 1,925 files were copied, so there's no `About.xml`. Without it, RimWorld can't identify the mod and falls back to labeling it \"Anonymous\" with no listed versions.\n- **Effect:** Every mod (and PRF's own defs) that reference Project RimFactory's def names can't resolve them, producing the ~140 `Could not load reference` errors you're seeing for `PRF_*` and `RR_Book_PRF_*` defs — that matches your count almost exactly.\n\nThis is a general pattern, not specific to PRF: an \"Author: Anonymous, versions: none\" mod with no description is always a corrupt/partial folder, not a broken mod — no point debugging it, it needs reinstalling.\n\n## The fix\n\n1. Delete the corrupt `anonymous189.2033979700` folder entirely (it's really the half-copied PRF folder).\n2. Re-copy Project RimFactory Revived fresh from your Steam workshop cache (packageId `spdskatr.projectrimfactory`).\n3. Verify the file count matches the source (should be 1,925 files) so you know the copy actually completed this time.\n4. Confirm it now shows as \"Project RimFactory Revived\" with proper versions/description in your mod list, and re-add/confirm `spdskatr.projectrimfactory` in your load order (it's already correctly positioned in your current list, right after `arandomkiwi.raidsforme`/near the top-middle of the third-party mods).\n\nOnce reinstalled correctly, all ~140 `PRF_*` reference errors should disappear along with the fake \"anonymous189\" entry.\n\nOne compatibility note while you're touching PRF: the author lists known incompatibilities (Mend and Recycle assemblers, Technology Blueprints t3 miner) per the mod compatibility listings in the knowledge base — worth checking if you run either of those alongside it, though neither appears active in your current list.\n\n## Everything else in your log, briefly\n\nNot related to this question, but for completeness since you ran the full check:\n- The 299 \"Fallback handler could not load library ...data-...dll\" lines are known harmless noise (`incident-fallback-handler-noise`).\n- `check_load_order` found several real load-order violations (e.g. Yayo's Animation vs Giddy-Up, UI Not Included needing to load after several UI mods, Quarry vs Alpha Biomes, etc.) and one live incompatibility (Camera+ vs SimpleCameraSetting — already handled by your `ray1203.simplecamerasetting` being disabled). Happy to detail these separately if you want them addressed too.",
+  "tools": [
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld__check_load_order",
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 8,
+  "cost": 0.1114118
+ },
+ {
+  "id": "filth-trashtype",
+  "answer": "The check confirms this is a known, already-diagnosed issue — it's not in your current Player.log run (that log's 49 distinct lines don't include it), but it exactly matches a recorded incident from your own debugging history.\n\n**Mod at fault:** Filth Creates Trash (`dra.filthcreatestrash`), by Sokyran/Hush.\n\n**Why:** Filth Creates Trash patches every filth def to drop a `trashType` item from Vanilla Recycling Expanded (`vanillaexpanded.recycling`, workshop id 3155781848). Its About.xml correctly lists VRE as a dependency, and it *is* in your current load order right before Filth Creates Trash — but per your own incident log (`incident-filth-trashtype`, verdict: fixed), the root cause last time wasn't load order at all: **the dependency resolved to the wrong Workshop item**, so the real Vanilla Recycling Expanded content was never actually active, leaving every `trashType` reference null → one \"trashType must be declared\" config error per filth def (~90 of them, matching what you're seeing).\n\n**Fix (per your own resolved incident):** Verify that packageId `vanillaexpanded.recycling` in your mods folder is genuinely Workshop item **3155781848** (Vanilla Recycling Expanded) and not a mis-resolved duplicate/stale copy — re-subscribe/re-download it if needed, then confirm its defNames match what Filth Creates Trash references. No patch or reorder is required; load order (recycling → filthcreatestrash) is already correct.\n\nNote: `check_load_order` found no ordering or dependency problems for either mod — this is purely an installed-content issue, not a load-order one. Everything else `check_load_order` flagged (Giddy-Up/Camera+ duplicates, UI Not Included ordering, etc.) is unrelated to this error and already handled/disabled by you per the incident log.",
+  "tools": [
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld__check_load_order",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 9,
+  "cost": 0.1258114
+ },
+ {
+  "id": "vfe-research",
+  "answer": "Good news: this is already documented and fixed on your own list, per the owner's incident record — and it's confirmed by checking your current mod list, which already has `vanillaexpanded.vfepower` installed.\n\n**What was wrong:** Three mods reference a research project called `VFE_IndustrialGenerators`, but that def lives in **Vanilla Furniture Expanded – Power** (`vanillaexpanded.vfepower`, Workshop ID 2062943477). If that mod isn't installed/active, the reference can't resolve and the game logs the error you're seeing.\n\n**The fix:** Add/enable Vanilla Furniture Expanded – Power in your mod list.\n\n**Status on your current list:** I checked your active `ModsConfig.xml` — `vanillaexpanded.vfepower` is already present and loaded (position 14, right after the VFE Core framework). So if you're still seeing this specific \"could not resolve reference\" line, it would be from an old log capture before the fix, not your current setup — I don't see that exact resolve-failure line in your current Player.log at all.\n\nOne related-but-separate thing that *did* show up in your current log, worth not confusing with this: two harmless config warnings about `VFE_IndustrialGenerators` and `BoneRefine` (from Rim of Madness – Bones) both claiming the same research-tree grid coordinates (5, 4.5, Main tab). That's just a visual overlap warning in the research tab, not a missing-reference error — and it's moot anyway since you (the owner) have Rim of Madness – Bones (`sihv.rombones`) disabled per your own incident notes (\"BoneWall def errors and failed patches\").\n\nSo: nothing to change here — VFE Power is already in place and fixing the missing-research issue. If you're seeing the error live in-game right now despite that, let me know and I'll dig into why it's still firing (e.g., a stale log file or a load-order issue preventing VFE Power's defs from registering).",
+  "tools": [
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld__check_load_order"
+  ],
+  "turns": 8,
+  "cost": 0.125014
+ },
+ {
+  "id": "fallback-noise",
+  "answer": "Good news: you don't need to track any mod down for this one.\n\n**\"Fallback handler could not load library ...data-....dll\"** (299 occurrences, tagged `incident-fallback-handler-noise`) is harmless Unity/Mono noise that shows up under heavy Harmony patching — it's not tied to any specific mod's DLL. The owner's own incident notes for this list confirm it's noise that \"cannot be fixed from a mod,\" and it isn't something a mod author or RimSort rule flags as a conflict either. With 241 mods and heavy Harmony use, this is expected. You can ignore it.\n\nIf you want fewer log lines overall, turning off **Development mode** will suppress the extra stack-trace noise RimWorld 1.6 prints under every log message (per the same KB note), but that's a log-readability preference, not a fix for anything broken.\n\nIf you meant a different, more specific symptom (e.g. an actual crash or missing feature), let me know and I'll dig into the other log entries — there are a few real ones in there (Harmony patch exceptions from **While You're Up** `zsbk.patch16.whileyoureup` and **Smart Speed** `sarg.smartspeed`, and an illegal defName from **Hunt for Me** `arandomkiwi.huntforme`) that the owner's incidents say should be disabled for 1.6, not the DLL lines.",
+  "tools": [
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 6,
+  "cost": 0.07965320000000001
+ },
+ {
+  "id": "whileyoureup",
+  "answer": "**No — despite the About.xml claim, it's not fine, and the owner has already disabled it.**\n\n- **Mod:** While You're Up (1.6 patch) — `zsbk.patch16.whileyoureup`\n- **Author's claim:** `supportedVersions` lists 1.6, so on paper it looks compatible.\n- **Owner's incident (highest authority for this list):** *\"While You're Up, Smart Speed and Hunt For Me throw on 1.6\"* — all three declare 1.6 support but their Harmony patches actually fail at runtime, so they load but do nothing (in this mod's case, Harmony patch exceptions at startup).\n- **Owner's fix:** `zsbk.patch16.whileyoureup` is in the disabled list, reason: *\"Harmony patches fail on 1.6; Pick Up And Haul covers it.\"* Pick Up And Haul, already active in the list, provides the same hauling-while-idle functionality, so no replacement mod is needed.\n\nSo the disagreement is: author's About.xml says \"supports 1.6,\" but the owner's own play-testing (Player.log Harmony exceptions) shows the patch doesn't actually work on 1.6. Per the priority rules, the owner's observed incident overrides the author's version claim.\n\n**Smallest fix:** leave it disabled (already done) — don't re-enable it. If it's currently active in your `ModsConfig.xml`, turn it off; Pick Up And Haul already covers the functionality it was meant to provide.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-kb__knowledge_base_read"
+  ],
+  "turns": 7,
+  "cost": 0.06653099999999999
+ },
+ {
+  "id": "quarry-alphabiomes",
+  "answer": "## Quarry should load *after* Alpha Biomes\n\n**Who says so:** This is a RimSort community rule (`rule-ogliss-thewhitecrayon-quarry-loadAfter-sarg-alphabiomes`), not something either mod's own author declares — Quarry's About.xml only lists Harmony/DLCs in its loadAfter, and Alpha Biomes' About.xml doesn't mention Quarry at all.\n\n**Why:** The rule's note is a reference error for `TerrainDef GU_RedQuartzBase` — Quarry needs a terrain def that Alpha Biomes defines, so Alpha Biomes must load first.\n\n**Confirmed in your actual list:** `check_load_order` flags this exact violation — Quarry (`ogliss.thewhitecrayon.quarry`) is currently at position 123, loading *before* Alpha Biomes (`sarg.alphabiomes`). The tool's suggested fix moves Quarry down to position 152, after Alpha Biomes.\n\n**Fix:** Move Quarry below Alpha Biomes in your load order (or move Alpha Biomes above Quarry — either satisfies the rule). This is a straightforward reorder, no mod needs to be disabled.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld__check_load_order"
+  ],
+  "turns": 8,
+  "cost": 0.1015856
+ },
+ {
+  "id": "holsters-harmony",
+  "answer": "According to the dataset:\n\n- **Holsters** (`iworosiak.holsters`) has no `dependencies` listed in its own About.xml — so the author does **not** declare Harmony as a dependency.\n- The only rule involving Holsters is a RimSort community rule saying it should **load before Doc Pawn Overhaul** (`drzhivago.docpawnoverhaul`) to avoid errors — unrelated to Harmony.\n\nSo based on the data available, Holsters does not require Harmony. (Many RimWorld mods use Harmony under the hood without declaring it as a formal dependency, but nothing in the author's own metadata or the community rules for this mod mentions Harmony at all.)",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 4,
+  "cost": 0.029738800000000003
+ },
+ {
+  "id": "pocketsand-ce",
+  "answer": "**Pocket Sand should load before Combat Extended.**\n\n- Pocket Sand's own About.xml lists a `loadBefore` entry for `ceteam.combatextended` (Combat Extended) [dataset].\n- The knowledge base confirms this: \"Combat Extended compatible. **Must load before Combat Extended**\" [Pocket Sand entry, sourced from the mod's dataset info].\n\nSo the correct order is: **Pocket Sand (`usagirei.pocketsand`) → Combat Extended (`ceteam.combatextended`)**, not the reverse. I didn't find a conflicting RimSort community rule or owner incident on this pair — the author's own declared `loadBefore` is the only source and it's unambiguous.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 5,
+  "cost": 0.051700800000000005
+ },
+ {
+  "id": "camera-mods",
+  "answer": "**No — disable one of them.**\n\nCamera+ (`brrainz.cameraplus`) and SimpleCameraSetting (`ray1203.simplecamerasetting`) both hook the same camera control functionality, so running them together causes a direct feature conflict.\n\n- **Source:** This is a documented owner incident from this exact list (\"Two camera mods active at once\"), not just a community rule — the owner already hit this in play.\n- **Fix already applied on this list:** keep **Camera+**, disable **SimpleCameraSetting**. Verdict logged as `disabled-mod`.\n\nSmallest change: in your mod list, turn off SimpleCameraSetting and keep Camera+ active. There's no patch or load-order tweak that lets both run — one has to go.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 6,
+  "cost": 0.04897
+ },
+ {
+  "id": "fluffy-breakdowns",
+  "answer": "Short answer: it's not flagged as broken, but it's also not officially declared for 1.6 — and there's no evidence either way from actual play.\n\n**What the sources say**\n\n- **Author (About.xml, per the dataset):** Fluffy Breakdowns (`fluffy.fluffybreakdowns`) lists `supportedVersions` of 1.0, 1.1, 1.2, 1.4 only — 1.5 and 1.6 are not declared. No dependencies, load-order rules, or incompatibilities are listed by the author.\n- **RimSort community rules:** none exist for this packageId — no load order or compatibility claims either way.\n- **Owner's own incidents:** none mention it. It is *not* one of the three mods the owner found broken on 1.6 (While You're Up, Smart Speed, Hunt for Me — see `errors/logging` KB entry) and it's not in the owner's `disabled[]` list in the current modlist.\n- **`check_load_order` (deterministic):** did not raise any finding for it — no order violation, no incompatibility, and notably it wasn't flagged under the \"not declared for 1.6\" check either, despite the mod's own data showing no 1.6 support.\n- **Player.log:** no lines reference Fluffy Breakdowns or \"breakdown\" at all. Nothing in the 363 problem lines ties to this mod.\n\n**Bottom line**\n\nThe mod is currently active and hasn't produced any observed errors in this list's log, and the deterministic checker raised no complaint. But the author's own metadata stops at 1.4, so 1.6 compatibility isn't something anyone has actually vouched for — it's just quietly not causing trouble so far. No change is needed right now; if you do hit breakdown-related oddities later, it's the first suspect given the stale version declaration.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld__check_load_order",
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld-kb__knowledge_base_read"
+  ],
+  "turns": 8,
+  "cost": 0.1223356
+ },
+ {
+  "id": "signs-passability",
+  "answer": "Good news: this is already fixed in your list, or nearly so.\n\n**What's wrong:** RimWorld 1.6 flags any ThingDef marked `Impassable` that also has a low `fillPercent` as a contradiction — that combination doesn't make physical sense (an \"impassable\" object that barely fills its tile). Several decorative sign defs in **Signs and Comments** (`dark.signs`) are defined that way, which is why you get exactly 18 config errors on startup.\n\n**Source of the fix:** This is documented as your own resolved incident (`incident-signs-passability`, verdict: *fixed*), which outranks generic guesses here. The fix is a small patch mod, **Modlist Compatibility Fixes** (`booyaka101.modlistfixes`), which sets the affected sign defs to `PassThroughOnly` instead of `Impassable`. No mod needs to be disabled — this isn't a real incompatibility, just a config quirk 1.6 now checks for.\n\n**Where you stand:** You already have `booyaka101.modlistfixes` installed and it's the very **last** entry in your load order, and its own declared rule is `loadAfter: dark.signs` — both satisfied. So the fix should already be applying.\n\nIf you're still seeing the 18 errors despite that:\n- Double check `booyaka101.modlistfixes` is actually **enabled** (not just present in the mods folder) — it wasn't in Player.log's error list, so I can't confirm from the log whether it's active.\n- Make sure you're looking at a *current* log after the patch mod was added — old logs from before you added it would still show the 18 errors.\n\nI didn't find these 18 sign-passability lines in your current Player.log output, which is consistent with the patch already suppressing them. If you paste the fresh log after confirming the mod is enabled and I'll re-check.",
+  "tools": [
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 8,
+  "cost": 0.0981568
+ },
+ {
+  "id": "stacktraces",
+  "answer": "Nothing's broken — this is confirmed as expected RimWorld 1.6 behavior, not a symptom of a bad mod list.\n\n**Why it happens:** As of 1.6, RimWorld prints a full stack trace under *every* `Log.Message` call, even plain informational ones. So the log looks like a wall of errors when most of it is just normal chatter with noise attached. The fix isn't a mod change — either ignore the trace lines and read only each block's first line, or turn off **Development mode**, which suppresses the extra trace output entirely (owner's own KB entry, `errors/logging`).\n\n**The specific line you're likely seeing most:** `Fallback handler could not load library data-0000021BB92128E0.dll`, repeated 299 times in your log (matches incident `incident-fallback-handler-noise`). That's Unity/Mono noise produced by heavy Harmony patching load — harmless, and not something any mod can fix.\n\nSo: the stack-trace-under-everything behavior is a known 1.6 logging quirk, and the dominant repeated line is confirmed harmless noise. Neither indicates something broken in your setup.\n\nThat said, your log does have a handful of *real* problems mixed in underneath the noise (Harmony patch exceptions, missing patch targets, etc.) — if you want, I can run `check_load_order` against your actual mod list and walk through those separately, since they're distinct from the stack-trace noise you're asking about.",
+  "tools": [
+   "mcp__rimworld__read_player_log",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 5,
+  "cost": 0.0625632
+ },
+ {
+  "id": "uinotincluded-smartspeed",
+  "answer": "**UI Not Included should load *after* Smart Speed.**\n\nThis is a RimSort community rule (`gondragon.uinotincluded` → `loadAfter` → `sarg.smartspeed`): UI Not Included ships built-in compatibility code for Smart Speed, and that logic needs Smart Speed already loaded to run correctly — so Smart Speed goes higher in the list, UI Not Included lower.\n\nThis matches the general pattern for UI Not Included (it also needs to load after Colony Manager, Medical Tab, Dubs Mint Menus, InventoryTab, WeaponStats, RIMMSqol, Hospitality, and Gizmo Begone!, since it rearranges the main bar and those add buttons to it) — Smart Speed's case is just a compatibility-code reason rather than a button-registration one.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 5,
+  "cost": 0.048956
+ },
+ {
+  "id": "xmlext-winstonwave",
+  "answer": "**Vanilla Storytellers Expanded – Winston Waves** must load **before** **XML Extensions**.\n\n- Rule: `vanillastorytellersexpanded.winstonwave` → `loadBefore` → `imranfish.xmlextensions`\n- Source: RimSort community database\n- Note: \"mod config 'waves' tab error\" — i.e. loading Winston Waves after XML Extensions causes a mod-config UI error on its Waves settings tab.\n\nRelated context: XML Extensions also has a community `loadTop` rule (load as close to the top as possible, right after DLC/before other content mods), which is consistent with — not contradicted by — Winston Waves needing to precede it.\n\nI didn't find any owner incident or author (About.xml) statement addressing this specific pair, so this ordering comes solely from the RimSort community rule.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 4,
+  "cost": 0.04164419999999999
+ },
+ {
+  "id": "rimatomics-sos2",
+  "answer": "Neither mod's own data ties them together, and there's no RimSort community rule or owner incident linking them either. Here's what the data actually shows:\n\n**No order requirement exists between Rimatomics and Save Our Ship 2 in this dataset.**\n\n- Dubs Rimatomics (`dubwise.rimatomics`) has no `loadAfter`/`loadBefore`/`incompatibleWith` entries at all in its About.xml data.\n- Save Our Ship 2 (`kentington.saveourship2`) has plenty of `loadAfter` rules (Harmony, the DLCs, Vehicle Framework, VVE Tier 3) and several `incompatibleWith` entries, but none mention Rimatomics.\n- No RimSort community rule pairs the two.\n- No owner incident (from your Player.log debugging history) names either mod together.\n- `check_load_order` against your current 241-mod list flagged zero issues between them.\n\nIn your active list, Rimatomics already sits well before SOS2 (`dubwise.rimatomics` loads early alongside the other Dubs mods; `kentington.saveourship2` loads much later, after Vehicle Framework), which is a safe arrangement since SOS2 needs Vehicle Framework and the DLCs above it anyway — but that's incidental, not a rule about Rimatomics specifically.\n\n**Bottom line:** there's no documented dependency or conflict between these two, so no reorder is needed for this pair. If you're chasing a specific error mentioning both in Player.log, share that line — it isn't in the incidents this dataset currently tracks, so I'd need the actual text to investigate further.",
+  "tools": [
+   "mcp__rimworld-data__initial_context",
+   "mcp__rimworld-kb__initial_context",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld__read_mod_list",
+   "mcp__rimworld__check_load_order",
+   "mcp__rimworld-kb__knowledge_base_read",
+   "mcp__rimworld-data__groq_query",
+   "mcp__rimworld-data__schema_explorer",
+   "mcp__rimworld-data__groq_query"
+  ],
+  "turns": 10,
+  "cost": 0.1639028
+ }
+]

@@ -37,6 +37,18 @@ npm run agent -- --list ../data/demo/ModsConfig.xml --log ../data/demo/Player.lo
 
 Without `--list` and `--log` it reads your own game's files. It never changes your ModsConfig.xml; if you accept the reorder it writes a new file next to it.
 
+## Does the knowledge base help?
+
+`agent/eval/questions.json` has 15 questions with reference answers taken from the dataset, including one the data can't answer. `npm run eval` asks each under three conditions with the same model (claude-sonnet-5) and prompt: no tools, the local tools plus GROQ over the dataset, and those plus the knowledge base. A judge (claude-opus-5-5) grades each answer against the reference without being told the condition.
+
+| | correct | partial | wrong | contradicts reference | avg cost |
+|---|---|---|---|---|---|
+| no tools | 2 | 6 | 7 | 11 | $0.017 |
+| dataset | 11 | 3 | 1 | 4 | $0.066 |
+| dataset + knowledge base | 14 | 0 | 1 | 1 | $0.085 |
+
+Caveats. It's one run per question, and I wrote the questions from the same data the agent reads, so the no-tools row mostly shows what a model can't know about my list. The judge can still tell a tool-using answer from a memory answer by its wording. Two references (`vfe-research`, `filth-trashtype`) originally assumed the mod was missing, but the demo list the agent reads already has it, so correct "it's already in your list" answers were marked down; I fixed those two references and regraded only them. With the original references the rows were 2, 9 and 12 correct (`eval/results/grades-original-references.json`). The one miss in the last row is real: asked about the old Fluffy Breakdowns, it confused it with the 1.6 fork already in the list and never looked up the replacement.
+
 The dataset is public, so you can query it directly:
 
 ```

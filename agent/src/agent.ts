@@ -59,39 +59,53 @@ function localTools(inputs: Inputs) {
   })
 }
 
-export const SYSTEM_PROMPT = `You help a RimWorld 1.6 player understand why their modded game throws errors and what to change.
+const INTRO = `You help a RimWorld 1.6 player understand why their modded game throws errors and what to change.
 
 You have three kinds of source, and they carry different authority:
 - the mod author (About.xml: dependencies, load order, incompatibilities, supported versions),
 - the RimSort community rules, which fill gaps the authors left,
-- the owner's own incidents, observed while getting this exact list to load. For this list they outrank the other two.
+- the owner's own incidents, observed while getting this exact list to load. For this list they outrank the other two.`
 
-Tools:
-- rimworld: read_mod_list, read_player_log, check_load_order, write_proposed_order. check_load_order is deterministic; trust its findings over your own reading of the list.
-- rimworld-kb: the knowledge base. It explains why mods conflict and what fixed it before, and keeps both sides when sources disagree. Read the entries a finding or log line points you to.
-- rimworld-data: the full dataset over GROQ, for exact facts about any mod (mod, rule, incident and modList documents).
+export type Server = 'rimworld' | 'rimworld-kb' | 'rimworld-data'
+export const SERVERS: Server[] = ['rimworld', 'rimworld-kb', 'rimworld-data']
 
-Work from evidence. Read the log and run the check before you explain anything. Tie each log line you discuss to a mod and a source. An incident explains a line only if the line carries its signature (read_player_log tags these) or names its mods; don't stretch one to cover a line that just mentions the same def. When sources disagree, say who claims what. If the data doesn't cover something, say so rather than guessing. Harmless noise (the owner's incidents mark some) should be named as harmless in one line, not investigated.
+const TOOLS: Record<Server, string> = {
+  'rimworld': 'read_mod_list, read_player_log, check_load_order, write_proposed_order. check_load_order is deterministic; trust its findings over your own reading of the list.',
+  'rimworld-kb': 'the knowledge base. It explains why mods conflict and what fixed it before, and keeps both sides when sources disagree. Read the entries a finding or log line points you to.',
+  'rimworld-data': 'the full dataset over GROQ, for exact facts about any mod (mod, rule, incident and modList documents).',
+}
 
-Answer plainly: what is wrong, why, and the smallest change that fixes it, most important first. Name mods by title and packageId.`
+const EVIDENCE = `Work from evidence. Read the log and run the check before you explain anything. Tie each log line you discuss to a mod and a source. An incident explains a line only if the line carries its signature (read_player_log tags these) or names its mods; don't stretch one to cover a line that just mentions the same def. When sources disagree, say who claims what. If the data doesn't cover something, say so rather than guessing. Harmless noise (the owner's incidents mark some) should be named as harmless in one line, not investigated.`
 
-export function agentOptions(inputs: Inputs, model: string): Options {
+const NO_TOOLS = `You have no tools in this session. Answer from what you know, and say so when you don't know.`
+
+const ANSWER = `Answer plainly: what is wrong, why, and the smallest change that fixes it, most important first. Name mods by title and packageId.`
+
+/** The system prompt for a session with `servers` connected; with none, the model answers from memory. */
+export function systemPrompt(servers: Server[]) {
+  const tools = servers.map((s) => `- ${s}: ${TOOLS[s]}`).join('\n')
+  return [INTRO, ...(servers.length ? [`Tools:\n${tools}`, EVIDENCE] : [NO_TOOLS]), ANSWER].join('\n\n')
+}
+
+export function agentOptions(inputs: Inputs, model: string, servers = SERVERS): Options {
   const token = process.env.SANITY_CONTEXT_TOKEN
   const org = process.env.SANITY_ORG_ID
-  if (!token || !org) throw new Error('set SANITY_CONTEXT_TOKEN and SANITY_ORG_ID (see .env.example)')
-  const remote = (name: string) => ({type: 'http' as const, url: `${CONTEXT}/${org}/mcp/${name}`, headers: {Authorization: `Bearer ${token}`}})
+  const remote = (name: string) => {
+    if (!token || !org) throw new Error('set SANITY_CONTEXT_TOKEN and SANITY_ORG_ID (see .env.example)')
+    return {type: 'http' as const, url: `${CONTEXT}/${org}/mcp/${name}`, headers: {Authorization: `Bearer ${token}`}}
+  }
   return {
     model,
-    systemPrompt: SYSTEM_PROMPT,
-    mcpServers: {'rimworld': localTools(inputs), 'rimworld-kb': remote('rimworld-kb'), 'rimworld-data': remote('rimworld-data')},
+    systemPrompt: systemPrompt(servers),
+    mcpServers: Object.fromEntries(servers.map((s) => [s, s === 'rimworld' ? localTools(inputs) : remote(s)])),
     tools: [],
-    allowedTools: ['mcp__rimworld', 'mcp__rimworld-kb', 'mcp__rimworld-data'],
+    allowedTools: servers.map((s) => `mcp__${s}`),
     permissionMode: 'dontAsk',
     settingSources: [],
     maxTurns: 40,
   }
 }
 
-export function ask(prompt: string, inputs: Inputs = {list: MODS_CONFIG, log: PLAYER_LOG}, model = 'claude-sonnet-5') {
-  return query({prompt, options: agentOptions(inputs, model)})
+export function ask(prompt: string, inputs: Inputs = {list: MODS_CONFIG, log: PLAYER_LOG}, model = 'claude-sonnet-5', servers = SERVERS) {
+  return query({prompt, options: agentOptions(inputs, model, servers)})
 }
