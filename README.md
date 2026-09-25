@@ -4,6 +4,10 @@ Ask it why your modded RimWorld 1.6 game throws errors. It reads your ModsConfig
 
 The content lives in Sanity (project `49jweiga`, dataset `production`, public) and the agent reads it through Sanity Context. Built for the DEV Sanity challenge.
 
+![The agent's tool calls on the demo list](docs/agent-trace.png)
+
+Its answer is in [`runs/demo-default.md`](runs/demo-default.md), and the checker's findings on the same list are in [`docs/check.png`](docs/check.png).
+
 ## Why three sources
 
 Mod authors declare dependencies, load order and incompatibilities in About.xml, but plenty of them don't, and some declarations are stale. RimSort's community rules fill a lot of those gaps. Then there's what I learned getting my own 232-mod list to load on 1.6: which log lines are noise, which mods I had to switch off, what actually fixed what.
