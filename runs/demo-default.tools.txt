@@ -1,0 +1,12 @@
+  > mcp__rimworld__read_mod_list {}
+  > mcp__rimworld__read_player_log {}
+  > mcp__rimworld__check_load_order {}
+  > mcp__rimworld-data__initial_context {}
+  > mcp__rimworld-kb__initial_context {}
+  > mcp__rimworld-data__groq_query {"query":"*[_type==\"modList\" && _id==\"modlist-current\"][0]{title, gameVersion, \"disabledCount\": count(disabled), disabled}"}
+  > mcp__rimworld-data__groq_query {"query":"*[_type==\"incident\"]{title, signature, symptom, cause, fix, verdict, mods}"}
+  > mcp__rimworld-kb__knowledge_base_read {"knowledgeBase":"kb9UxiwEbpUC","paths":["errors/logging","combat_and_weapons","ui_and_quality_of_life","world_and_biomes/mods"]}
+  > mcp__rimworld-data__groq_query {"query":"*[_type==\"mod\" && (packageId match \"*door*\" || packageId match \"*lock*\" || title match \"*Door*\" || title match \"*Lock*\")]{title, packageId}"
+  > mcp__rimworld__write_proposed_order {"out":"ModsConfig.proposed.xml"}
+
+success, 11 turns, $0.357
